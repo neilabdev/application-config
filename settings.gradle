@@ -1,1 +1,5 @@
 rootProject.name = "application-config"
+//=======
+include 'external-config'
+include 'test-app'
+//>>>>>>> external-config/master

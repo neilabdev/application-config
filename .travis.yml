@@ -1,14 +1,18 @@
-sudo: false
+language: groovy
+sudo: required
 cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
-  - $HOME/.m2/repositories/
-language: groovy
 jdk:
-- openjdk7
-install: true
-script: ./travis-build.sh
+- openjdk8
+before_install:
+# Workaround for https://github.com/gradle/gradle/issues/2421:
+# download all Gradle distributions with openjdk8
+- JAVA_HOME=$(jdk_switcher home openjdk8) ./gradlew assemble
+install: "/bin/true"
+script:
+- JAVA_HOME=$(jdk_switcher home openjdk8) "./travis-build.sh"
 env:
   global:
   - GIT_NAME="Søren Berg Glasius"

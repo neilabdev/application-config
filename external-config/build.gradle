@@ -1,0 +1,88 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.2"
+    }
+}
+
+plugins {
+    id "com.jfrog.artifactory" version "4.9.3"
+}
+
+version "$pluginVersion"
+group "com.neilab.plugins"
+
+apply plugin:"eclipse"
+apply plugin:"idea"
+apply plugin:"org.grails.grails-plugin"
+apply plugin:"org.grails.grails-plugin-publish"
+apply plugin:"org.grails.grails-gsp"
+apply plugin:"asset-pipeline"
+
+// sourceCompatibility has to be placed after applying the Java Plugin:
+// See https://stackoverflow.com/questions/21028438/gradle-sourcecompatibility-has-no-effect-to-subprojects
+//sourceCompatibility = "1.8"
+//targetCompatibility = "1.8"
+
+repositories {
+    mavenLocal()
+    maven { url "https://repo.grails.org/grails/core" }
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.grails:grails-core"
+    implementation "org.grails:grails-dependencies"
+
+    console "org.grails:grails-console"
+    profile "org.grails.profiles:plugin"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    testCompile "org.grails:grails-web-testing-support"
+
+    runtime 'com.virtualdogbert:GroovyConfigWriter:1.1'
+    runtime 'org.yaml:snakeyaml:1.23'
+}
+
+//bootJar.enabled = false
+
+grailsPublish {
+    user = System.getenv("BINTRAY_USER") ?: project.findProperty('bintrayUser')
+    key = System.getenv("BINTRAY_KEY") ?: project.findProperty('bintrayKey')
+
+    //userOrg = "grails"
+
+    githubSlug = 'https://github.com/neilabdev/application-config'
+
+    license {
+        name = 'Apache-2.0'
+    }
+    title = "Application Config"
+    desc = "Allows external configuration via grails.config.locations, JNDI, and system properties"
+    developers = [neilabdev: "ghost"]
+    portalUser = System.getenv("GRAILS_PORTAL_USER") ?: project.findProperty('grailsPortalUser')
+    portalPassword = System.getenv("GRAILS_PORTAL_PASSWORD") ?: project.findProperty('grailsPortalPassword')
+}
+
+
+/*
+
+artifactory {
+    contextUrl = 'http://oss.jfrog.org'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = System.getenv("BINTRAY_USER") ?: project.findProperty('bintrayUser')
+            password = System.getenv("BINTRAY_KEY") ?: project.findProperty('bintrayKey')
+        }
+        defaults {
+            publications('maven')
+        }
+    }
+} */
